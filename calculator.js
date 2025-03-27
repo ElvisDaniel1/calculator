@@ -53,17 +53,28 @@ document.addEventListener("DOMContentLoaded", () => {
             let input = button.textContent;
             strNumber = strNumber + input;
             //inputProcessing(input); run command when u get an equal sign
+            if (input === 'C') {
+                const element = document.getElementById("output");
+                while (element.firstChild) {
+                    element.removeChild(element.firstChild);
+                }
+            }
+                
+
             if (input === '=')
                 evaluate(strNumber);
 
             //let txtCont = input; 
-            const node = document.createTextNode(input);
+            if (input != 'C') {
+                const node = document.createTextNode(input);
             
-            const para = document.createElement("p");
-            para.appendChild(node);
+                const para = document.createElement("p");
+                para.appendChild(node);
 
-            const element = document.getElementById("output");
-            element.appendChild(para);
+                const outElement = document.getElementById("output");
+                outElement.appendChild(para);
+            }
+            
         })
     });
 
@@ -71,25 +82,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // Capture user input at '=' and handle string
 function evaluate(strNumber){
+    
     // Use a filter to determine which operation is taking place
-  
-// HERE -> test individually    
-//    let operator = strsNumber.filter((input) => {
-//        return input == '+' ||  input == '-' || input == '/' || input == 'x'})
-    alert(operator);
+    let strsNumber = strNumber.split("");
+    let operator = strsNumber.filter((input) => {
+        return input == '+' ||  input == '-' || input == '/' || input == 'x'})
     
-
-    let strsNumber = strNumber.split("+");
-
-
-
-    let numA = strsNumber[0];
-    let numB = strsNumber[1];
     
+    // How do we determine what to split on???
+    let operands = strNumber.split(operator);
 
-    //numB = numB.replace('=', '');
+    let numA = operands[0];
+    let numB = operands[1];
+    
+    numB = numB.replace('=', '');
 
-    console.log(numA);
-    console.log(numB);
+
+    //console.log(numA);
+    //console.log(numB);
+    //console.log(strNumber);
 }
 
