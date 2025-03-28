@@ -3,6 +3,7 @@ let numA = 0;
 let numB = 0;
 let operator = '';
 let answer = '';
+let count = 0;
 
 capture();
 
@@ -18,7 +19,7 @@ function operate(a, b, operator) {
         return (a * b);
     }
     else
-        return (a / b); 
+        return (parseFloat(a) / parseFloat(b)); 
 }
 
 
@@ -31,11 +32,34 @@ function capture() {
         button.addEventListener("click", () => {
                  
             let input = button.textContent;
-            strNumber = strNumber + input;
-            //inputProcessing(input); run command when u get an equal sign
-            if (input === 'C') 
-                clearScreen();
+
+            // Check how many operators are being used
+            if (['-', '+', '/', 'x'].some(op => input.includes(op))){
+                count = count + 1;
+                //alert(count);
+            }
+
                 
+
+            if (count > 1){
+                count = count - 1;
+                evaluate(strNumber);
+                strNumber = answer + input;
+            }
+            else{
+                strNumber = strNumber + input;
+            }
+            
+
+            
+            //inputProcessing(input); run command when u get an equal sign
+            if (input === 'C'){
+                clearScreen();
+                strNumber = '';
+            } 
+                
+            
+            
             if (input === '=')
                 evaluate(strNumber);
 
@@ -68,6 +92,9 @@ function clearScreen(){
                 while (element.firstChild) {
                     element.removeChild(element.firstChild);
                 }
+    numA = 0;
+    numB = 0;
+    operator = '';
 }
 
 // Capture user input at '=' and handle string
@@ -82,8 +109,9 @@ function evaluate(strNumber){
     // How do we determine what to split on???
     let operands = strNumber.split(operator);
 
-    let numA = Number(operands[0]);
-    let numB = operands[1];
+    // Removed declarations
+    numA = Number(operands[0]);
+    numB = operands[1];
     
     numB = numB.replace('=', '');
     numB = Number(numB);
