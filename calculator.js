@@ -19,9 +19,8 @@ function operate(a, b, operator) {
         return (a * b);
     }
     else
-        return (parseFloat(a) / parseFloat(b)); 
+        return ((parseFloat(a) / parseFloat(b)).toFixed(4)); 
 }
-
 
 // Capturing buttons
 function capture() {
@@ -39,36 +38,32 @@ function capture() {
                 //alert(count);
             }
 
-                
-
             if (count > 1){
                 count = count - 1;
                 evaluate(strNumber);
                 strNumber = answer + input;
             }
-            else{
+            else
                 strNumber = strNumber + input;
-            }
-            
 
-            
             //inputProcessing(input); run command when u get an equal sign
             if (input === 'C'){
                 clearScreen();
                 strNumber = '';
             } 
                 
-            
-            
             if (input === '=')
                 evaluate(strNumber);
 
             //let txtCont = input; 
             if (input != 'C' && input != '=') {
+                getElementAppend("output", input);
+                /*
                 const para = drawToScreen(input);
 
                 const outElement = document.getElementById("output");
                 outElement.appendChild(para);
+                */
             }
             
         })
@@ -76,6 +71,14 @@ function capture() {
 
 });
 
+}
+
+function getElementAppend(eName, answer) {
+    const target = document.getElementById(eName);
+
+    const para = drawToScreen(answer);
+
+    target.appendChild(para);
 }
 
 function drawToScreen(nodeIn){
@@ -98,8 +101,8 @@ function clearScreen(){
 }
 
 // Capture user input at '=' and handle string
-function evaluate(strNumber){
-    
+function evaluate(strNumber){   
+
     // Use a filter to determine which operation is taking place
     let strsNumber = strNumber.split("");
     let operator = strsNumber.filter((input) => {
@@ -120,11 +123,12 @@ function evaluate(strNumber){
 
     // Output calculated answer
     clearScreen();
-    const target = document.getElementById("output");
-    
-    const para = drawToScreen(answer);
 
+    //Error checking
+    if (answer == 'NaN')
+        answer = '0';
+
+    getElementAppend("output", answer);
     
-    target.appendChild(para);
 }
 
