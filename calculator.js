@@ -4,6 +4,8 @@ let numB = 0;
 let operator = '';
 let answer = '';
 let count = 0;
+let equalPressed = false;
+let strNumber = '';
 
 capture();
 
@@ -24,19 +26,24 @@ function operate(a, b, operator) {
 
 // Capturing buttons
 function capture() {
-    let strNumber = '';
     document.addEventListener("DOMContentLoaded", () => {
     const numBtn = document.querySelectorAll(".btn-num");
     numBtn.forEach((button) => {
         button.addEventListener("click", () => {
                  
             let input = button.textContent;
-
+            console.log(input);
             // Check how many operators are being used
             if (['-', '+', '/', 'x'].some(op => input.includes(op))){
+                //getElementAppend("output", input);
                 count = count + 1;
-                //alert(count);
             }
+            else if (equalPressed === true){
+                answer = '';
+                equalPressed = false;
+                clearScreen();
+            }
+            
 
             if (count > 1){
                 count = count - 1;
@@ -46,24 +53,19 @@ function capture() {
             else
                 strNumber = strNumber + input;
 
-            //inputProcessing(input); run command when u get an equal sign
             if (input === 'C'){
                 clearScreen();
-                strNumber = '';
             } 
                 
-            if (input === '=')
+            if (input === '='){
+                equalPressed = true;
+                count = 0;
                 evaluate(strNumber);
+            }
 
             //let txtCont = input; 
             if (input != 'C' && input != '=') {
                 getElementAppend("output", input);
-                /*
-                const para = drawToScreen(input);
-
-                const outElement = document.getElementById("output");
-                outElement.appendChild(para);
-                */
             }
             
         })
@@ -98,6 +100,7 @@ function clearScreen(){
     numA = 0;
     numB = 0;
     operator = '';
+    strNumber = '';
 }
 
 // Capture user input at '=' and handle string
@@ -125,6 +128,8 @@ function evaluate(strNumber){
     clearScreen();
 
     //Error checking
+    if (answer == 'Infinity')
+        answer = 'Nice try lol';
     if (answer == 'NaN')
         answer = '0';
 
