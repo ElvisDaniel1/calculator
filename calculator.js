@@ -13,7 +13,13 @@ let children = 0;
 let discardPressed = false; 
 
 capture();
-
+keyboardAccess();
+//console.log(keyboardAccess());
+    
+/*
+if (k != '')
+    kCapture(k);
+*/
 //Send to appropriate function to operate on
 function operate(a, b, operator) {
     if (operator == '+'){
@@ -36,10 +42,9 @@ function capture() {
     numBtn.forEach((button) => {
         button.addEventListener("click", () => {
             discardPressed = false;
-            //console.log(count);
-            console.log(strNumber);
+            
             let input = button.textContent;
-            //console.log(input);
+            
             // Check how many operators are being used
             if (['-', '+', '/', 'x'].some(op => input.includes(op))){
                 count = count + 1;
@@ -120,6 +125,85 @@ function capture() {
 
 }
 
+// Capture from keyboard
+function kCapture(input) {
+    // How to handle backspace and decimal??
+
+    discardPressed = false;
+
+    // Check how many operators are being used
+    if (['-', '+', '/', 'x'].some(op => input.includes(op))){
+        count = count + 1;
+        opPressed = false; // Resets disabled decimal after operator is used
+    }
+    else if (equalPressed === true){
+        answer = '';
+        equalPressed = false;
+        clearScreen();
+    }
+
+    // Error checking -decimalPoint 
+    if (input === '.'){
+        opPressed = true;
+        document.getElementById("decimal").disabled = true;
+    }
+
+    if (opPressed === false){
+        document.getElementById("decimal").disabled = false;                
+    }
+
+    // Function buttons
+            
+    // Delete button
+    if (input === '⌫'){
+        const parent = document.getElementById("output");
+        
+        children = parent.children.length;
+
+        const lastChild = parent.children[children-1];
+
+        parent.removeChild(lastChild);
+        input = '';
+        discardPressed = true;
+        
+        // Reduce counter if operator was pressed
+        //lastInput =  input;
+        if (['-', '+', '/', 'x'].some(op => lastInput.includes(op)) && discardPressed == true)
+            count = count - 1;
+    
+        strNumber = strNumber.replace(lastInput, ''); 
+    }
+
+    if (input === 'C'){
+        input = '';
+        clearScreen();
+    } 
+        
+    if (input === '='){
+        equalPressed = true;
+        count = 0;
+        evaluate(strNumber);
+    }
+
+    // Error checking -operatorCount
+    if (count > 1){
+        count = count - 1;
+        evaluate(strNumber);
+        strNumber = answer + input;
+    }
+    else
+        strNumber = strNumber + input;
+
+    //let txtCont = input; 
+    if (input != 'C' && input != '=' && discardPressed != true) {
+        getElementAppend("output", input);
+    }
+    lastInput = input;
+    console.log(lastInput);
+}
+
+
+
 function getElementAppend(eName, answer) {
     const target = document.getElementById(eName);
 
@@ -148,6 +232,30 @@ function clearScreen(){
     strNumber = '';
     opPressed = false;
 }
+
+//keyboardAccess()
+function keyboardAccess(){
+    //const activeArea = document.getElementById("active");
+    
+    let n = 0;
+    window.addEventListener("keydown", (event) => {
+        if (event.shiftKey == true){
+            n = '';
+        } 
+        if (event.key >= 0 && event.key <= 9)
+            n = event.key;
+        else if (['+', '-', '/', '*', '=', '.'].includes(event.key)){
+            n = event.key;
+        }
+        
+
+        kCapture(n);
+
+        },
+    true,
+    );
+}
+
 
 // Capture user input at '=' and handle string
 function evaluate(strNumber){   
@@ -182,4 +290,3 @@ function evaluate(strNumber){
     getElementAppend("output", answer);
     
 }
-
